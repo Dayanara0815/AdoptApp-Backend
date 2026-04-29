@@ -7,6 +7,7 @@ import com.utp.adoptappbackend.pet.model.dto.PetResponse;
 import com.utp.adoptappbackend.pet.service.PetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,56 +20,56 @@ public class PetController {
     private final PetService petService;
 
     @GetMapping
-    public ApiResponse<List<PetResponse>> findAll() {
-        return ApiResponse.<List<PetResponse>>builder()
+    public ResponseEntity<ApiResponse<List<PetResponse>>> findAll() {
+        return ResponseEntity.ok(ApiResponse.<List<PetResponse>>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(petService.findAll())
-                .build();
+                .build());
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<PetResponse> findById(@PathVariable Long id) {
-        return ApiResponse.<PetResponse>builder()
+    public ResponseEntity<ApiResponse<PetResponse>> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.<PetResponse>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(petService.findById(id))
-                .build();
+                .build());
     }
 
     @PostMapping
-    public ApiResponse<PetResponse> create(@Valid @RequestBody PetRequest request) {
-        return ApiResponse.<PetResponse>builder()
+    public ResponseEntity<ApiResponse<PetResponse>> create(@Valid @RequestBody PetRequest request) {
+        return ResponseEntity.ok(ApiResponse.<PetResponse>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(petService.create(request))
-                .build();
+                .build());
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<PetResponse> update(@PathVariable Long id, @Valid @RequestBody PetRequest request) {
-        return ApiResponse.<PetResponse>builder()
+    public ResponseEntity<ApiResponse<PetResponse>> update(@PathVariable Long id, @Valid @RequestBody PetRequest request) {
+        return ResponseEntity.ok(ApiResponse.<PetResponse>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(petService.update(id, request))
-                .build();
+                .build());
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         petService.delete(id);
-        return ApiResponse.<Void>builder()
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.DELETED)
-                .build();
+                .build());
     }
 
     @GetMapping("/user/{userId}")
-    public ApiResponse<List<PetResponse>> findByUserId(@PathVariable Long userId) {
-        return ApiResponse.<List<PetResponse>>builder()
+    public ResponseEntity<ApiResponse<List<PetResponse>>> findByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(ApiResponse.<List<PetResponse>>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(petService.findByUserId(userId))
-                .build();
+                .build());
     }
 }
