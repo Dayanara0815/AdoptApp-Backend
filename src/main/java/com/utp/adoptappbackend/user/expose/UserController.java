@@ -2,10 +2,12 @@ package com.utp.adoptappbackend.user.expose;
 
 import com.utp.adoptappbackend.common.model.ApiResponse;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
-import com.utp.adoptappbackend.user.model.dto.AuthRequest;
+import com.utp.adoptappbackend.user.model.dto.AuthRegisterRequest;
+import com.utp.adoptappbackend.user.model.dto.LoginResponse;
 import com.utp.adoptappbackend.user.model.dto.UserRequest;
 import com.utp.adoptappbackend.user.model.dto.UserResponse;
 import com.utp.adoptappbackend.user.service.UserService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +30,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<UserResponse>> login(@Valid @RequestBody AuthRequest request) {
-        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody AuthRegisterRequest request) {
+        return ResponseEntity.ok(ApiResponse.<LoginResponse>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(userService.login(request))
                 .build());
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> findById(@PathVariable Long id) {

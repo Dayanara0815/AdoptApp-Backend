@@ -30,4 +30,7 @@ public class UserRequest {
 
     @NotNull(message = "El rol es obligatorio")
     private Role role;
+
+    private HostelRequest hostel;
 }
+
