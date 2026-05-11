@@ -6,6 +6,7 @@ import com.utp.adoptappbackend.user.model.dto.AuthRegisterRequest;
 import com.utp.adoptappbackend.user.model.dto.LoginResponse;
 import com.utp.adoptappbackend.user.model.dto.UserRequest;
 import com.utp.adoptappbackend.user.model.dto.UserResponse;
+import com.utp.adoptappbackend.user.model.dto.UserUpdateRequest;
 import com.utp.adoptappbackend.user.service.UserService;
 
 import jakarta.validation.Valid;
@@ -38,13 +39,21 @@ public class UserController {
                 .build());
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(userService.findById(id))
+                .build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message(ConstantUtil.OK_MESSAGE)
+                .data(userService.update(id, request))
                 .build());
     }
 }
