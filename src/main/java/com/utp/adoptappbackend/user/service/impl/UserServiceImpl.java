@@ -12,6 +12,7 @@ import com.utp.adoptappbackend.user.model.dto.LoginResponse;
 import com.utp.adoptappbackend.user.model.dto.TokenClientResponse;
 import com.utp.adoptappbackend.user.model.dto.UserRequest;
 import com.utp.adoptappbackend.user.model.dto.UserResponse;
+import com.utp.adoptappbackend.user.model.dto.UserUpdateRequest;
 import com.utp.adoptappbackend.user.repository.UserRepository;
 import com.utp.adoptappbackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -97,5 +98,30 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
         return userMapper.toResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse update(Long id, UserUpdateRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ApiValidateException("Usuario no encontrado para actualización."));
+
+        // MapStruct actualiza de forma automática los campos principales no nulos de User
+        userMapper.updateUserFromDto(request, user);
+
+        // Si es un Hostel, delegamos a MapStruct la actualización de la relación anidada
+        if (user.getRole() == Role.HOSTEL && request.getHostel() != null) {
+            Hostel hostel = user.getHostel();
+            if (hostel == null) {
+                hostel = new Hostel();
+                hostel.setUser(user);
+                user.setHostel(hostel);
+            }
+            // MapStruct actualiza automáticamente todos los campos no nulos de Hostel
+            userMapper.updateHostelFromDto(request.getHostel(), hostel);
+        }
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toResponse(savedUser);
     }
 }
