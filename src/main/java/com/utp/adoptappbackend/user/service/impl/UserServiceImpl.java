@@ -1,10 +1,15 @@
 package com.utp.adoptappbackend.user.service.impl;
 
 import com.utp.adoptappbackend.common.exception.ApiValidateException;
+import com.utp.adoptappbackend.common.model.enumeration.Role;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
+import com.utp.adoptappbackend.shared.client.AuthClient;
 import com.utp.adoptappbackend.user.mapper.UserMapper;
+import com.utp.adoptappbackend.user.model.Hostel;
 import com.utp.adoptappbackend.user.model.User;
-import com.utp.adoptappbackend.user.model.dto.AuthRequest;
+import com.utp.adoptappbackend.user.model.dto.AuthRegisterRequest;
+import com.utp.adoptappbackend.user.model.dto.LoginResponse;
+import com.utp.adoptappbackend.user.model.dto.TokenClientResponse;
 import com.utp.adoptappbackend.user.model.dto.UserRequest;
 import com.utp.adoptappbackend.user.model.dto.UserResponse;
 import com.utp.adoptappbackend.user.repository.UserRepository;
@@ -13,12 +18,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final AuthClient authClient;
 
     @Override
     @Transactional
@@ -26,21 +34,61 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new ApiValidateException("El correo electrónico ya está registrado.");
         }
+
+        // 1. Generar un externalId UUID aleatorio (requerido por ms-auth-service-helper)
+        UUID externalId = UUID.randomUUID();
+
+        // 2. Registrar credenciales en el microservicio de autenticación auxiliar
+        AuthRegisterRequest authReq = AuthRegisterRequest.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(request.getRole().name())
+                .externalId(externalId)
+                .build();
+        authClient.register(authReq);
+
+        // 3. Guardar el usuario en la base de datos local de negocio
         User user = userMapper.toEntity(request);
-        return userMapper.toResponse(userRepository.save(user));
+        
+        // Si es un Hostel, instanciamos la relación bidireccional
+        if (request.getRole() == Role.HOSTEL && request.getHostel() != null) {
+            Hostel hostel = Hostel.builder()
+                    .user(user)
+                    .hostelName(request.getHostel().getHostelName())
+                    .description(request.getHostel().getDescription())
+                    .capacity(request.getHostel().getCapacity())
+                    .logo(request.getHostel().getLogo())
+                    .donationLink(request.getHostel().getDonationLink())
+                    .website(request.getHostel().getWebsite())
+                    .facebookUrl(request.getHostel().getFacebookUrl())
+                    .instagramUrl(request.getHostel().getInstagramUrl())
+                    .isVerified(false)
+                    .build();
+            user.setHostel(hostel);
+        }
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toResponse(savedUser);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserResponse login(AuthRequest request) {
+    public LoginResponse login(AuthRegisterRequest request) {
+        // 1. Validar inicio de sesión en el servicio de autenticación
+        TokenClientResponse token = authClient.login(request);
+
+        // 2. Obtener los detalles del perfil desde el repositorio local
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ApiValidateException("Correo o contraseña incorrectos."));
+                .orElseThrow(() -> new ApiValidateException("Usuario no encontrado en la base de datos de negocio."));
 
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new ApiValidateException("Correo o contraseña incorrectos.");
-        }
-
-        return userMapper.toResponse(user);
+        // 3. Retornar el response unificado
+        return LoginResponse.builder()
+                .tokenType(token.getTokenType())
+                .accessToken(token.getAccessToken())
+                .expiresIn(token.getExpiresIn())
+                .refreshToken(token.getRefreshToken())
+                .user(userMapper.toResponse(user))
+                .build();
     }
 
     @Override
