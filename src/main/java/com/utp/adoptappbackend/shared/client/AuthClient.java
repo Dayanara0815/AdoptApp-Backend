@@ -43,4 +43,23 @@ public class AuthClient {
         }
         throw new IllegalStateException("Error al iniciar sesión en el servicio de autenticación");
     }
-}
+
+    public void updatePassword(String email, String newPassword) {
+        authWebClient.post()
+                .uri("/auth/update-password")
+                .bodyValue(new UpdatePasswordRequest(email, newPassword))
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, webClientUtils::handleError)
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    // DTO interno para la solicitud de actualización de contraseña
+    @lombok.Data
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class UpdatePasswordRequest {
+        private String email;
+        private String password;
+    }
+}
