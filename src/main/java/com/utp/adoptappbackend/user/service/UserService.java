@@ -19,4 +19,6 @@ public interface UserService {
     void resetPassword(ResetPasswordRequest request);
     PageResponse<UserResponse> findAll(int page, int size);
     PageResponse<UserResponse> findByRole(Role role, int page, int size);
+    UserResponse deactivateUser(Long id);
+    UserResponse activateUser(Long id);
 }
