@@ -28,6 +28,9 @@ public class Hostel {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false)
+    private String address;
+
     private Integer capacity;
 
     private String logo;
@@ -45,4 +48,7 @@ public class Hostel {
 
     @Column(nullable = false, name = "is_verified")
     private Boolean isVerified = false;
+
+    @Column(nullable = false, name = "is_active")
+    private Boolean isActive = true;
 }
