@@ -25,6 +25,9 @@ public class UserRequest {
     @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
+    @NotBlank(message = "El DNI es obligatorio")
+    private String dni;
+
     private String phone;
     private String address;
 
@@ -33,4 +36,3 @@ public class UserRequest {
 
     private HostelRequest hostel;
 }
-

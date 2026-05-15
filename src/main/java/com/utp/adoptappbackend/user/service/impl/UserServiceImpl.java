@@ -1,6 +1,7 @@
 package com.utp.adoptappbackend.user.service.impl;
 
 import com.utp.adoptappbackend.common.exception.ApiValidateException;
+import com.utp.adoptappbackend.common.model.PageResponse;
 import com.utp.adoptappbackend.common.model.enumeration.Role;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
 import com.utp.adoptappbackend.common.util.TokenUtil;
@@ -25,9 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -95,7 +101,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ApiValidateException("Usuario no encontrado en la base de datos de negocio."));
 
-        // 3. Retornar el response unificado
+        // 3. Validar que la cuenta esté activa
+        if (!user.getIsActive()) {
+            throw new ApiValidateException("La cuenta ha sido desactivada. Contacta con soporte para más información.");
+        }
+
+        // 4. Retornar el response unificado
         return LoginResponse.builder()
                 .tokenType(token.getTokenType())
                 .accessToken(token.getAccessToken())
@@ -205,5 +216,85 @@ public class UserServiceImpl implements UserService {
         passwordResetTokenRepository.save(resetToken);
 
         log.info("Contraseña actualizada exitosamente para el usuario: {}", user.getEmail());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<UserResponse> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<User> pageUsers = userRepository.findAll(pageable);
+
+        return new PageResponse<>(
+                pageUsers.getContent().stream()
+                        .map(userMapper::toResponse)
+                        .collect(Collectors.toList()),
+                page,
+                size,
+                pageUsers.getTotalElements(),
+                pageUsers.getTotalPages()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<UserResponse> findByRole(Role role, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<User> pageUsers = userRepository.findByRole(role, pageable);
+
+        return new PageResponse<>(
+                pageUsers.getContent().stream()
+                        .map(userMapper::toResponse)
+                        .collect(Collectors.toList()),
+                page,
+                size,
+                pageUsers.getTotalElements(),
+                pageUsers.getTotalPages()
+        );
+    }
+
+    @Override
+    @Transactional
+    public UserResponse deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
+
+        if (!user.getIsActive()) {
+            throw new ApiValidateException("La cuenta ya está desactivada.");
+        }
+
+        user.setIsActive(false);
+
+        // Si el usuario es un albergue, desactiva también el albergue
+        if (user.getRole() == Role.HOSTEL && user.getHostel() != null) {
+            user.getHostel().setIsActive(false);
+        }
+
+        User savedUser = userRepository.save(user);
+        log.info("Cuenta desactivada para el usuario: {}", user.getEmail());
+
+        return userMapper.toResponse(savedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse activateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
+
+        if (user.getIsActive()) {
+            throw new ApiValidateException("La cuenta ya está activa.");
+        }
+
+        user.setIsActive(true);
+
+        // Si el usuario es un albergue, activa también el albergue
+        if (user.getRole() == Role.HOSTEL && user.getHostel() != null) {
+            user.getHostel().setIsActive(true);
+        }
+
+        User savedUser = userRepository.save(user);
+        log.info("Cuenta activada para el usuario: {}", user.getEmail());
+
+        return userMapper.toResponse(savedUser);
     }
 }

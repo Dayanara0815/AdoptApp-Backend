@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class HostelResponse {
     private String hostelName;
     private String description;
+    private String address;
     private Integer capacity;
     private String logo;
     private String donationLink;
@@ -19,4 +20,5 @@ public class HostelResponse {
     private String facebookUrl;
     private String instagramUrl;
     private Boolean isVerified;
+    private Boolean isActive;
 }

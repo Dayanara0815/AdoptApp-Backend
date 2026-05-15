@@ -30,6 +30,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String dni;
+
     private String phone;
 
     private String address;
@@ -37,6 +40,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private Boolean isActive = true;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Hostel hostel;
@@ -58,4 +64,3 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 }
-

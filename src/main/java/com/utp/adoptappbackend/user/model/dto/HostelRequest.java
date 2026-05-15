@@ -16,6 +16,10 @@ public class HostelRequest {
     private String hostelName;
 
     private String description;
+
+    @NotBlank(message = "La dirección del albergue es obligatoria")
+    private String address;
+
     private Integer capacity;
     private String logo;
     private String donationLink;
