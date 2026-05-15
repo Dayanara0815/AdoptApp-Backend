@@ -101,4 +101,22 @@ public class UserController {
                 .data(userService.findByRole(role, page, size))
                 .build());
     }
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<ApiResponse<UserResponse>> deactivateUser(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message("Cuenta desactivada exitosamente.")
+                .data(userService.deactivateUser(id))
+                .build());
+    }
+
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<ApiResponse<UserResponse>> activateUser(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message("Cuenta activada exitosamente.")
+                .data(userService.activateUser(id))
+                .build());
+    }
 }
