@@ -101,7 +101,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ApiValidateException("Usuario no encontrado en la base de datos de negocio."));
 
-        // 3. Retornar el response unificado
+        // 3. Validar que la cuenta esté activa
+        if (!user.getIsActive()) {
+            throw new ApiValidateException("La cuenta ha sido desactivada. Contacta con soporte para más información.");
+        }
+
+        // 4. Retornar el response unificado
         return LoginResponse.builder()
                 .tokenType(token.getTokenType())
                 .accessToken(token.getAccessToken())
@@ -245,5 +250,51 @@ public class UserServiceImpl implements UserService {
                 pageUsers.getTotalElements(),
                 pageUsers.getTotalPages()
         );
+    }
+
+    @Override
+    @Transactional
+    public UserResponse deactivateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
+
+        if (!user.getIsActive()) {
+            throw new ApiValidateException("La cuenta ya está desactivada.");
+        }
+
+        user.setIsActive(false);
+
+        // Si el usuario es un albergue, desactiva también el albergue
+        if (user.getRole() == Role.HOSTEL && user.getHostel() != null) {
+            user.getHostel().setIsActive(false);
+        }
+
+        User savedUser = userRepository.save(user);
+        log.info("Cuenta desactivada para el usuario: {}", user.getEmail());
+
+        return userMapper.toResponse(savedUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse activateUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
+
+        if (user.getIsActive()) {
+            throw new ApiValidateException("La cuenta ya está activa.");
+        }
+
+        user.setIsActive(true);
+
+        // Si el usuario es un albergue, activa también el albergue
+        if (user.getRole() == Role.HOSTEL && user.getHostel() != null) {
+            user.getHostel().setIsActive(true);
+        }
+
+        User savedUser = userRepository.save(user);
+        log.info("Cuenta activada para el usuario: {}", user.getEmail());
+
+        return userMapper.toResponse(savedUser);
     }
 }
