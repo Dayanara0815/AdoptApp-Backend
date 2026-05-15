@@ -1,6 +1,8 @@
 package com.utp.adoptappbackend.user.expose;
 
 import com.utp.adoptappbackend.common.model.ApiResponse;
+import com.utp.adoptappbackend.common.model.PageResponse;
+import com.utp.adoptappbackend.common.model.enumeration.Role;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
 import com.utp.adoptappbackend.user.model.dto.AuthRegisterRequest;
 import com.utp.adoptappbackend.user.model.dto.ForgotPasswordRequest;
@@ -74,6 +76,29 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.<Void>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message("La contraseña ha sido actualizada exitosamente.")
+                .build());
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.<PageResponse<UserResponse>>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message(ConstantUtil.OK_MESSAGE)
+                .data(userService.findAll(page, size))
+                .build());
+    }
+
+    @GetMapping("/role/{role}")
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> findByRole(
+            @PathVariable Role role,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.<PageResponse<UserResponse>>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message(ConstantUtil.OK_MESSAGE)
+                .data(userService.findByRole(role, page, size))
                 .build());
     }
 }
