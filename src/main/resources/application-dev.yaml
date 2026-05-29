@@ -18,6 +18,13 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8081/.well-known/jwks.json
+    uri: http://localhost:5173
+  uri-front: "http://localhost:5173"
 api:
   auth:
     uri: "http://localhost:8081"
