@@ -1,6 +1,10 @@
 package com.utp.adoptappbackend.pet.expose;
 
 import com.utp.adoptappbackend.common.model.ApiResponse;
+import com.utp.adoptappbackend.common.model.PageResponse;
+import com.utp.adoptappbackend.common.model.enumeration.Size;
+import com.utp.adoptappbackend.common.model.enumeration.Species;
+import com.utp.adoptappbackend.common.model.enumeration.Status;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
 import com.utp.adoptappbackend.pet.model.dto.PetRequest;
 import com.utp.adoptappbackend.pet.model.dto.PetResponse;
@@ -25,6 +29,21 @@ public class PetController {
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
                 .data(petService.findAll())
+                .build());
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<ApiResponse<PageResponse<PetResponse>>> findPage(
+            @RequestParam(defaultValue = "AVAILABLE") Status status,
+            @RequestParam(required = false) List<Species> species,
+            @RequestParam(required = false) Size size,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int sizeVal) {
+        return ResponseEntity.ok(ApiResponse.<PageResponse<PetResponse>>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message(ConstantUtil.OK_MESSAGE)
+                .data(petService.findFiltered(status, species, size, search, page, sizeVal))
                 .build());
     }
 

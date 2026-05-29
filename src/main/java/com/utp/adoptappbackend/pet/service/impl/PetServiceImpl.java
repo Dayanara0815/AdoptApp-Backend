@@ -1,6 +1,9 @@
 package com.utp.adoptappbackend.pet.service.impl;
 
 import com.utp.adoptappbackend.common.exception.ApiValidateException;
+import com.utp.adoptappbackend.common.model.PageResponse;
+import com.utp.adoptappbackend.common.model.enumeration.Size;
+import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
 import com.utp.adoptappbackend.pet.mapper.PetMapper;
@@ -12,6 +15,10 @@ import com.utp.adoptappbackend.pet.service.PetService;
 import com.utp.adoptappbackend.user.model.User;
 import com.utp.adoptappbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,5 +95,36 @@ public class PetServiceImpl implements PetService {
         return petRepository.findByUserIdAndStatusNot(userId, com.utp.adoptappbackend.common.model.enumeration.Status.DELETED).stream()
                 .map(petMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<PetResponse> findFiltered(Status status, List<Species> species, Size size, String search, int page, int sizeVal) {
+        Pageable pageable = PageRequest.of(page, sizeVal, Sort.by("id").descending());
+        Status petStatus = (status == null) ? Status.AVAILABLE : status;
+        List<Species> speciesList = (species == null || species.isEmpty()) ? null : species;
+        boolean isSpeciesEmpty = (speciesList == null);
+        String searchQuery = (search == null || search.trim().isEmpty()) ? "" : search.trim();
+        boolean isSearchEmpty = searchQuery.isEmpty();
+
+        Page<Pet> pagePets = petRepository.findFiltered(
+                petStatus, 
+                speciesList, 
+                isSpeciesEmpty, 
+                size, 
+                searchQuery, 
+                isSearchEmpty, 
+                pageable
+        );
+
+        return new PageResponse<>(
+                pagePets.getContent().stream()
+                        .map(petMapper::toResponse)
+                        .collect(Collectors.toList()),
+                page,
+                sizeVal,
+                pagePets.getTotalElements(),
+                pagePets.getTotalPages()
+        );
     }
 }

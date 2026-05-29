@@ -1,8 +1,14 @@
 package com.utp.adoptappbackend.pet.repository;
 
+import com.utp.adoptappbackend.common.model.enumeration.Size;
+import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
 import com.utp.adoptappbackend.pet.model.Pet;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,4 +17,17 @@ import java.util.List;
 public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByStatusNot(Status status);
     List<Pet> findByUserIdAndStatusNot(Long userId, Status status);
+
+    @Query("SELECT p FROM Pet p WHERE p.status = :status " +
+           "AND (:isSpeciesEmpty = true OR p.species IN :species) " +
+           "AND (:size IS NULL OR p.size = :size) " +
+           "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<Pet> findFiltered(
+            @Param("status") Status status,
+            @Param("species") List<Species> species,
+            @Param("isSpeciesEmpty") boolean isSpeciesEmpty,
+            @Param("size") Size size,
+            @Param("search") String search,
+            @Param("isSearchEmpty") boolean isSearchEmpty,
+            Pageable pageable);
 }
