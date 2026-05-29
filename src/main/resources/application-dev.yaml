@@ -5,9 +5,9 @@ spring:
     name: AdoptApp-Backend
   
   datasource:
-    url: jdbc:postgresql://dpg-d7q0ckhj2pic73faeva0-a.oregon-postgres.render.com:5432/adoptapp_postgre
-    username: adoptapp_postgre_user
-    password: mVy1R8TBJSITSM1U1a9DEoL4MUnhEwYS
+    url: jdbc:postgresql://32.194.142.199:5432/adoptapp_db
+    username: postgres
+    password: bOAr3TE86lNIKFuavSVQDe49mFxj2OySzy
     driver-class-name: org.postgresql.Driver
 
   jpa:
