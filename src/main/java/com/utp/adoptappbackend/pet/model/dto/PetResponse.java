@@ -23,4 +23,5 @@ public class PetResponse {
     private String image;
     private Status status;
     private Long userId;
+    private String contactPhone;
 }
