@@ -1,6 +1,7 @@
 package com.utp.adoptappbackend.pet.service.impl;
 
 import com.utp.adoptappbackend.common.exception.ApiValidateException;
+import com.utp.adoptappbackend.common.model.enumeration.Status;
 import com.utp.adoptappbackend.common.util.ConstantUtil;
 import com.utp.adoptappbackend.pet.mapper.PetMapper;
 import com.utp.adoptappbackend.pet.model.Pet;
@@ -28,7 +29,7 @@ public class PetServiceImpl implements PetService {
     @Override
     @Transactional(readOnly = true)
     public List<PetResponse> findAll() {
-        return petRepository.findByStatusNot(com.utp.adoptappbackend.common.model.enumeration.Status.DELETED).stream()
+        return petRepository.findByStatusNot(Status.DELETED).stream()
                 .map(petMapper::toResponse)
                 .collect(Collectors.toList());
     }
@@ -38,7 +39,7 @@ public class PetServiceImpl implements PetService {
     public PetResponse findById(Long id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
-        if (pet.getStatus() == com.utp.adoptappbackend.common.model.enumeration.Status.DELETED) {
+        if (pet.getStatus() == Status.DELETED) {
             throw new ApiValidateException(ConstantUtil.NOT_FOUND);
         }
         return petMapper.toResponse(pet);
@@ -77,7 +78,7 @@ public class PetServiceImpl implements PetService {
     public void delete(Long id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
-        pet.setStatus(com.utp.adoptappbackend.common.model.enumeration.Status.DELETED);
+        pet.setStatus(Status.DELETED);
         petRepository.save(pet);
     }
 
