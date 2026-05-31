@@ -23,7 +23,7 @@ public interface UserMapper {
 
     HostelResponse toHostelResponse(Hostel entity);
 
-    // ✅ Nuevo método para crear Hostel desde HostelRequest
+    // Nuevo método para crear Hostel desde HostelRequest
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "isVerified", expression = "java(false)")

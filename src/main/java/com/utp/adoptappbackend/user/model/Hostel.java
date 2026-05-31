@@ -22,18 +22,17 @@ public class Hostel {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false, name = "hostel_name")
+    @Column(nullable = false, name = "hostel_name", columnDefinition = "TEXT")
     private String hostelName;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String address;
 
     private Integer capacity;
 
-    // En tu entidad Hostel
     @Column(columnDefinition = "TEXT")
     private String logo;
 

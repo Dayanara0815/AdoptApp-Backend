@@ -38,6 +38,9 @@ public class User {
 
     private String address;
 
+    @Column(columnDefinition = "TEXT")
+    private String avatar;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
