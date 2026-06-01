@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entidad JPA que representa la información de negocio de un albergue.
+ * Comparte su clave primaria en una relación uno a uno (Shared Primary Key) con
+ * la entidad {@link User}.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +19,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "hostels")
 public class Hostel {
 
+    /**
+     * Identificador único del albergue. Es idéntico al ID del {@link User}
+     * asociado mediante la estrategia de clave primaria compartida (@MapsId).
+     */
     @Id
-    private Long id; // Este ID será idéntico al ID de User
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
@@ -48,6 +57,10 @@ public class Hostel {
     @Column(columnDefinition = "TEXT", name = "instagram_url")
     private String instagramUrl;
 
+    /**
+     * Indica si el albergue ha sido validado y aprobado por la administración del sistema.
+     * Por defecto inicia en falso hasta realizar la verificación de sus credenciales.
+     */
     @Column(nullable = false, name = "is_verified")
     private Boolean isVerified = false;
 

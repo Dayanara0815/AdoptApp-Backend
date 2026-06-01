@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO que representa la respuesta detallada de la información de un albergue.
+ * Contiene los datos de contacto, enlaces a redes sociales, estado de verificación y activación.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +23,9 @@ public class HostelResponse {
     private String website;
     private String facebookUrl;
     private String instagramUrl;
+    /**
+     * Indica si el albergue ha sido validado y verificado por la administración del sistema.
+     */
     private Boolean isVerified;
     private Boolean isActive;
 }
