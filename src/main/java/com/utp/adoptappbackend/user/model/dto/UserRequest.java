@@ -9,6 +9,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO que representa la solicitud para registrar un nuevo usuario en el
+ * sistema.
+ * Agrupa los datos personales obligatorios, de contacto, las credenciales de
+ * acceso,
+ * el rol asignado y, en caso de ser un albergue, la información adicional
+ * asociada.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
