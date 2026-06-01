@@ -44,7 +44,6 @@ public class UserRequest {
 
     /**
      * Información específica del albergue. Este campo es requerido y procesado
-     * únicamente si el rol seleccionado es {@code Role.HOSTEL}.
      */
     private HostelRequest hostel;
 }
