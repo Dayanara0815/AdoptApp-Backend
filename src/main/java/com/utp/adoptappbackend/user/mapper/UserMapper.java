@@ -23,6 +23,13 @@ public interface UserMapper {
 
     HostelResponse toHostelResponse(Hostel entity);
 
+    // Nuevo método para crear Hostel desde HostelRequest
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "isVerified", expression = "java(false)")
+    @Mapping(target = "isActive", expression = "java(true)")
+    Hostel toHostelEntity(HostelRequest request);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "password", ignore = true)
