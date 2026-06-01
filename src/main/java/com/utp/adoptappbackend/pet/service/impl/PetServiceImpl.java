@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ public class PetServiceImpl implements PetService {
     private final PetRepository petRepository;
     private final UserRepository userRepository;
     private final PetMapper petMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -57,9 +59,11 @@ public class PetServiceImpl implements PetService {
     public PetResponse create(PetRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ApiValidateException("Usuario no encontrado para crear la publicación."));
-        
+
         Pet pet = petMapper.toEntity(request, user);
-        return petMapper.toResponse(petRepository.save(pet));
+        PetResponse response = petMapper.toResponse(petRepository.save(pet));
+        messagingTemplate.convertAndSend("/topic/pets/created", response);
+        return response;
     }
 
     @Override
@@ -77,7 +81,9 @@ public class PetServiceImpl implements PetService {
         pet.setImage(request.getImage());
         pet.setStatus(request.getStatus());
 
-        return petMapper.toResponse(petRepository.save(pet));
+        PetResponse response = petMapper.toResponse(petRepository.save(pet));
+        messagingTemplate.convertAndSend("/topic/pets/updated", response);
+        return response;
     }
 
     @Override
@@ -87,6 +93,7 @@ public class PetServiceImpl implements PetService {
                 .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
         pet.setStatus(Status.DELETED);
         petRepository.save(pet);
+        messagingTemplate.convertAndSend("/topic/pets/deleted", id);
     }
 
     @Override

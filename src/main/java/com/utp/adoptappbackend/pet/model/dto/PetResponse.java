@@ -24,4 +24,6 @@ public class PetResponse {
     private Status status;
     private Long userId;
     private String contactPhone;
+    private String publisherName;
+    private String publisherRole;
 }

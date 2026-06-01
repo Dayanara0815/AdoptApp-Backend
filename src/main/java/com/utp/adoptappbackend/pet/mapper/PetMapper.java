@@ -16,5 +16,7 @@ public interface PetMapper {
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "contactPhone", source = "user.phone")
+    @Mapping(target = "publisherName", source = "user.fullName")
+    @Mapping(target = "publisherRole", source = "user.role")
     PetResponse toResponse(Pet entity);
 }
