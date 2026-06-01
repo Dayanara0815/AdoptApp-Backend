@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entidad JPA que representa la información de negocio de un albergue.
+ * Comparte su clave primaria en una relación uno a uno (Shared Primary Key) con la entidad {@link User}.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +21,10 @@ public class Hostel {
     @Id
     private Long id; // Este ID será idéntico al ID de User
 
+    /**
+     * Relación uno a uno con la cuenta de usuario del albergue.
+     * Utiliza {@code @MapsId} para que el ID del albergue sea el mismo que el de su usuario correspondiente.
+     */
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "user_id")
