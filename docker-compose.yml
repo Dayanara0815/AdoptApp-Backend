@@ -13,6 +13,7 @@ services:
 
     environment:
       SERVER_PORT: 8080
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
       JAVA_TOOL_OPTIONS: >-
         -XX:InitialRAMPercentage=${INITIAL_RAM_PERCENTAGE:-20}
         -XX:MaxRAMPercentage=${MAX_RAM_PERCENTAGE:-80}
