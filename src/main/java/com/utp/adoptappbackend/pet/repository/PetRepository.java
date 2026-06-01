@@ -18,10 +18,12 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByStatusNot(Status status);
     List<Pet> findByUserIdAndStatusNot(Long userId, Status status);
 
-    @Query("SELECT p FROM Pet p WHERE p.status = :status " +
-           "AND (:isSpeciesEmpty = true OR p.species IN :species) " +
-           "AND (:size IS NULL OR p.size = :size) " +
-           "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+    @Query("SELECT DISTINCT p FROM Pet p " +
+            "JOIN FETCH p.user " +  // ✅ AGREGAR ESTA LÍNEA
+            "WHERE p.status = :status " +
+            "AND (:isSpeciesEmpty = true OR p.species IN :species) " +
+            "AND (:size IS NULL OR p.size = :size) " +
+            "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<Pet> findFiltered(
             @Param("status") Status status,
             @Param("species") List<Species> species,
