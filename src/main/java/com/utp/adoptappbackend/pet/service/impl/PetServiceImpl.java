@@ -22,6 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import com.utp.adoptappbackend.adoption.repository.AdoptionRepository;
+import com.utp.adoptappbackend.adoption.model.Adoption;
+import java.time.LocalDateTime;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +37,7 @@ public class PetServiceImpl implements PetService {
     private final UserRepository userRepository;
     private final PetMapper petMapper;
     private final SimpMessagingTemplate messagingTemplate;
+    private final AdoptionRepository adoptionRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -72,6 +76,8 @@ public class PetServiceImpl implements PetService {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new ApiValidateException(ConstantUtil.NOT_FOUND));
 
+        Status oldStatus = pet.getStatus();
+
         pet.setName(request.getName());
         pet.setSpecies(request.getSpecies());
         pet.setAge(request.getAge());
@@ -81,7 +87,21 @@ public class PetServiceImpl implements PetService {
         pet.setImage(request.getImage());
         pet.setStatus(request.getStatus());
 
-        PetResponse response = petMapper.toResponse(petRepository.save(pet));
+        Pet savedPet = petRepository.save(pet);
+
+        if (request.getStatus() == Status.ADOPTED && oldStatus != Status.ADOPTED) {
+            if (!adoptionRepository.existsByPetId(id)) {
+                Adoption adoption = Adoption.builder()
+                        .pet(savedPet)
+                        .adopter(null)
+                        .adoptionDate(LocalDateTime.now())
+                        .status("Finalizado")
+                        .build();
+                adoptionRepository.save(adoption);
+            }
+        }
+
+        PetResponse response = petMapper.toResponse(savedPet);
         messagingTemplate.convertAndSend("/topic/pets/updated", response);
         return response;
     }
@@ -108,7 +128,7 @@ public class PetServiceImpl implements PetService {
     @Transactional(readOnly = true)
     public PageResponse<PetResponse> findFiltered(Status status, List<Species> species, Size size, String search, int page, int sizeVal) {
         Pageable pageable = PageRequest.of(page, sizeVal, Sort.by("id").descending());
-        Status petStatus = (status == null) ? Status.AVAILABLE : status;
+        Status petStatus = status;
         List<Species> speciesList = (species == null || species.isEmpty()) ? null : species;
         boolean isSpeciesEmpty = (speciesList == null);
         String searchQuery = (search == null || search.trim().isEmpty()) ? "" : search.trim();

@@ -9,6 +9,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO que representa la solicitud para registrar un nuevo usuario en el
+ * sistema.
+ * Agrupa los datos personales obligatorios, de contacto, las credenciales de
+ * acceso,
+ * el rol asignado y, en caso de ser un albergue, la información adicional
+ * asociada.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,5 +42,8 @@ public class UserRequest {
     @NotNull(message = "El rol es obligatorio")
     private Role role;
 
+    /**
+     * Información específica del albergue. Este campo es requerido y procesado
+     */
     private HostelRequest hostel;
 }

@@ -29,6 +29,9 @@ import org.springframework.data.domain.Sort;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación de la interfaz {@link UserService} para la gestión de la lógica de negocio de usuarios.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -39,6 +42,9 @@ public class UserServiceImpl implements UserService {
     private final AuthClient authClient;
 
 
+    /**
+     * Registra un nuevo usuario y su respectivo albergue en el sistema.
+     */
     @Override
     @Transactional
     public UserResponse register(UserRequest request) {
@@ -72,6 +78,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(savedUser);
     }
 
+    /**
+     * Autentica un usuario y genera sus credenciales de sesión.
+     */
     @Override
     @Transactional(readOnly = true)
     public LoginResponse login(AuthRegisterRequest request) {
@@ -97,6 +106,9 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    /**
+     * Obtiene los detalles de un usuario por su identificador único.
+     */
     @Override
     @Transactional(readOnly = true)
     public UserResponse findById(Long id) {
@@ -105,6 +117,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(user);
     }
 
+    /**
+     * Actualiza la información de perfil de un usuario.
+     */
     @Override
     @Transactional
     public UserResponse update(Long id, UserUpdateRequest request) {
@@ -130,6 +145,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(savedUser);
     }
 
+    /**
+     * Obtiene una lista paginada de todos los usuarios.
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResponse<UserResponse> findAll(int page, int size) {
@@ -147,6 +165,9 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    /**
+     * Obtiene una lista paginada de usuarios filtrados por rol.
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResponse<UserResponse> findByRole(Role role, int page, int size) {
@@ -164,6 +185,9 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    /**
+     * Desactiva lógicamente la cuenta de un usuario.
+     */
     @Override
     @Transactional
     public UserResponse deactivateUser(Long id) {
@@ -187,6 +211,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(savedUser);
     }
 
+    /**
+     * Activa lógicamente la cuenta de un usuario.
+     */
     @Override
     @Transactional
     public UserResponse activateUser(Long id) {
@@ -208,5 +235,13 @@ public class UserServiceImpl implements UserService {
         log.info("Cuenta activada para el usuario: {}", user.getEmail());
 
         return userMapper.toResponse(savedUser);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiValidateException("Usuario no encontrado con el correo especificado."));
+        return userMapper.toResponse(user);
     }
 }
