@@ -23,6 +23,9 @@ public class HostelResponse {
     private String website;
     private String facebookUrl;
     private String instagramUrl;
+    /**
+     * Indica si el albergue ha sido validado y verificado por la administración del sistema.
+     */
     private Boolean isVerified;
     private Boolean isActive;
 }
