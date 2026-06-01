@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO que representa la respuesta detallada de la información de un usuario.
+ * Retorna los datos del perfil de usuario, su rol y la información de albergue si corresponde.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +25,11 @@ public class UserResponse {
     private String address;
     private String avatar;
     private Role role;
+
+    /**
+     * Datos del albergue asociado. Este campo solo contiene información si el
+     * usuario tiene asignado el rol de {@code Role.HOSTEL}.
+     */
     private HostelResponse hostel;
     private Boolean isActive;
     private LocalDateTime createdAt;
