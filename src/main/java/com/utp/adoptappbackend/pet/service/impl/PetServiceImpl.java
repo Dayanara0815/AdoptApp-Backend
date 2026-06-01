@@ -108,7 +108,7 @@ public class PetServiceImpl implements PetService {
     @Transactional(readOnly = true)
     public PageResponse<PetResponse> findFiltered(Status status, List<Species> species, Size size, String search, int page, int sizeVal) {
         Pageable pageable = PageRequest.of(page, sizeVal, Sort.by("id").descending());
-        Status petStatus = (status == null) ? Status.AVAILABLE : status;
+        Status petStatus = status;
         List<Species> speciesList = (species == null || species.isEmpty()) ? null : species;
         boolean isSpeciesEmpty = (speciesList == null);
         String searchQuery = (search == null || search.trim().isEmpty()) ? "" : search.trim();

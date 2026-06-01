@@ -34,16 +34,20 @@ public class PetController {
 
     @GetMapping("/page")
     public ResponseEntity<ApiResponse<PageResponse<PetResponse>>> findPage(
-            @RequestParam(defaultValue = "AVAILABLE") Status status,
+            @RequestParam(defaultValue = "AVAILABLE") String status,
             @RequestParam(required = false) List<Species> species,
             @RequestParam(required = false) Size size,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeVal) {
+        Status petStatus = null;
+        if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("ALL")) {
+            petStatus = Status.valueOf(status.toUpperCase());
+        }
         return ResponseEntity.ok(ApiResponse.<PageResponse<PetResponse>>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
-                .data(petService.findFiltered(status, species, size, search, page, sizeVal))
+                .data(petService.findFiltered(petStatus, species, size, search, page, sizeVal))
                 .build());
     }
 
