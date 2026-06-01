@@ -16,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador REST para la gestión de usuarios.
+ * Proporciona endpoints para registrarse, iniciar sesión, buscar, actualizar y
+ * cambiar el estado de las cuentas de usuario.
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -23,6 +28,9 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Registra un nuevo usuario en el sistema.
+     */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody UserRequest request) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
@@ -32,6 +40,9 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Autentica a un usuario y genera un token de acceso.
+     */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody AuthRegisterRequest request) {
         return ResponseEntity.ok(ApiResponse.<LoginResponse>builder()
@@ -41,6 +52,9 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Busca y obtiene la información de un usuario por su identificador único.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
@@ -50,8 +64,12 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Actualiza la información de un usuario existente por su identificador.
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> update(@PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
@@ -59,6 +77,9 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Obtiene una lista paginada de todos los usuarios registrados.
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> findAll(
             @RequestParam(defaultValue = "0") int page,
@@ -70,6 +91,9 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Obtiene una lista paginada de usuarios filtrada por su rol.
+     */
     @GetMapping("/role/{role}")
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> findByRole(
             @PathVariable Role role,
@@ -82,6 +106,9 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Desactiva la cuenta de un usuario por su identificador.
+     */
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<ApiResponse<UserResponse>> deactivateUser(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
@@ -91,6 +118,9 @@ public class UserController {
                 .build());
     }
 
+    /**
+     * Activa la cuenta de un usuario por su identificador.
+     */
     @PutMapping("/{id}/activate")
     public ResponseEntity<ApiResponse<UserResponse>> activateUser(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
