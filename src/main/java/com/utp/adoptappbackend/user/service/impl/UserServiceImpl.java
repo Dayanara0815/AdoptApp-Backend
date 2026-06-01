@@ -236,4 +236,12 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toResponse(savedUser);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiValidateException("Usuario no encontrado con el correo especificado."));
+        return userMapper.toResponse(user);
+    }
 }

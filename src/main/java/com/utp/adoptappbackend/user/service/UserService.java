@@ -30,4 +30,5 @@ public interface UserService {
     UserResponse deactivateUser(Long id);
 
     UserResponse activateUser(Long id);
+    UserResponse findByEmail(String email);
 }
