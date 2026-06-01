@@ -27,7 +27,6 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/api/v1/users/register").permitAll()
                                 .requestMatchers("/api/v1/users/login").permitAll()
-                                // 🔥 PERMITIR WEBSOCKET (esto es lo que faltaba)
                                 .requestMatchers("/ws/**").permitAll()
                                 .requestMatchers("/ws/info/**").permitAll()
 
