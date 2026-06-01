@@ -27,6 +27,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/api/v1/users/register").permitAll()
                                 .requestMatchers("/api/v1/users/login").permitAll()
+                                // 🔥 PERMITIR WEBSOCKET (esto es lo que faltaba)
+                                .requestMatchers("/ws/**").permitAll()
+                                .requestMatchers("/ws/info/**").permitAll()
+
+                                // Catálogo público (solo lectura)
+                                .requestMatchers(HttpMethod.GET, "/api/v1/pets/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
