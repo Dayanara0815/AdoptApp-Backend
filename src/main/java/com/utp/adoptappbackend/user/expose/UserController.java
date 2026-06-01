@@ -99,4 +99,13 @@ public class UserController {
                 .data(userService.activateUser(id))
                 .build());
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<ApiResponse<UserResponse>> findByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+                .code(ConstantUtil.OK_CODE)
+                .message(ConstantUtil.OK_MESSAGE)
+                .data(userService.findByEmail(email))
+                .build());
+    }
 }

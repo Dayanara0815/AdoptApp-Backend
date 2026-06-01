@@ -17,4 +17,5 @@ public interface UserService {
     PageResponse<UserResponse> findByRole(Role role, int page, int size);
     UserResponse deactivateUser(Long id);
     UserResponse activateUser(Long id);
+    UserResponse findByEmail(String email);
 }
