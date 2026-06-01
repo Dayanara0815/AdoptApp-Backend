@@ -20,7 +20,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     @Query("SELECT DISTINCT p FROM Pet p " +
             "JOIN FETCH p.user " +  // ✅ AGREGAR ESTA LÍNEA
-            "WHERE p.status = :status " +
+            "WHERE (:status IS NULL AND p.status <> com.utp.adoptappbackend.common.model.enumeration.Status.DELETED OR p.status = :status) " +
             "AND (:isSpeciesEmpty = true OR p.species IN :species) " +
             "AND (:size IS NULL OR p.size = :size) " +
             "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.user.fullName) LIKE LOWER(CONCAT('%', :search, '%')))")
