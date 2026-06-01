@@ -23,7 +23,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
             "WHERE p.status = :status " +
             "AND (:isSpeciesEmpty = true OR p.species IN :species) " +
             "AND (:size IS NULL OR p.size = :size) " +
-            "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+            "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.user.fullName) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<Pet> findFiltered(
             @Param("status") Status status,
             @Param("species") List<Species> species,
