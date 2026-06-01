@@ -22,28 +22,30 @@ public class Hostel {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false, name = "hostel_name")
+    @Column(nullable = false, name = "hostel_name", columnDefinition = "TEXT")
     private String hostelName;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String address;
 
     private Integer capacity;
 
+    @Column(columnDefinition = "TEXT")
     private String logo;
 
-    @Column(name = "donation_link")
+    @Column(columnDefinition = "TEXT", name = "donation_link")
     private String donationLink;
 
+    @Column(columnDefinition = "TEXT")
     private String website;
 
-    @Column(name = "facebook_url")
+    @Column(columnDefinition = "TEXT", name = "facebook_url")
     private String facebookUrl;
 
-    @Column(name = "instagram_url")
+    @Column(columnDefinition = "TEXT", name = "instagram_url")
     private String instagramUrl;
 
     @Column(nullable = false, name = "is_verified")

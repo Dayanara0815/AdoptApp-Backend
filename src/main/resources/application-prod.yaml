@@ -3,7 +3,7 @@ server:
 spring:
   application:
     name: AdoptApp-Backend
-  
+
   datasource:
     url: jdbc:postgresql://32.194.142.199:5432/adoptapp_db
     username: postgres
@@ -22,15 +22,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8081/.well-known/jwks.json
-    uri: http://localhost:5173
-  uri-front: "http://localhost:5173"
+          jwk-set-uri: http://32.194.142.199:8081/.well-known/jwks.json
+    uri: http://32.194.142.199:5173
+  uri-front: "http://32.194.142.199:5173"
 api:
   auth:
-    uri: "http://localhost:8081"
-
-
-logging:
-  level:
-    org.hibernate.orm.jdbc.bind: TRACE
+    uri: "http://32.194.142.199:8081"
 

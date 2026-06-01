@@ -19,6 +19,7 @@ public class UserResponse {
     private String dni;
     private String phone;
     private String address;
+    private String avatar;
     private Role role;
     private HostelResponse hostel;
     private Boolean isActive;

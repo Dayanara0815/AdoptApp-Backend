@@ -63,18 +63,8 @@ public class UserServiceImpl implements UserService {
 
         // Si es un Hostel, instanciamos la relación bidireccional
         if (request.getRole() == Role.HOSTEL && request.getHostel() != null) {
-            Hostel hostel = Hostel.builder()
-                    .user(user)
-                    .hostelName(request.getHostel().getHostelName())
-                    .description(request.getHostel().getDescription())
-                    .capacity(request.getHostel().getCapacity())
-                    .logo(request.getHostel().getLogo())
-                    .donationLink(request.getHostel().getDonationLink())
-                    .website(request.getHostel().getWebsite())
-                    .facebookUrl(request.getHostel().getFacebookUrl())
-                    .instagramUrl(request.getHostel().getInstagramUrl())
-                    .isVerified(false)
-                    .build();
+            Hostel hostel = userMapper.toHostelEntity(request.getHostel());
+            hostel.setUser(user);
             user.setHostel(hostel);
         }
 
