@@ -16,7 +16,8 @@ import java.util.UUID;
 @Builder
 /**
  * Entidad JPA que representa a los usuarios del sistema.
- * Almacena los datos personales, credenciales de acceso, rol y auditoría temporal.
+ * Almacena los datos personales, credenciales de acceso, rol y auditoría
+ * temporal.
  */
 @Entity
 @Table(name = "users")
@@ -52,6 +53,9 @@ public class User {
     @Column(nullable = false)
     private Boolean isActive = true;
 
+    /**
+     * Relación uno a uno bidireccional con el perfil de albergue.
+     */
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Hostel hostel;
 
@@ -61,6 +65,10 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    /**
+     * Identificador único externo (UUID) para sincronización con el
+     * microservicio externo auxiliar de autenticación.
+     */
     @Column(name = "external_id")
     private UUID externalId;
 
