@@ -14,6 +14,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+/**
+ * Entidad JPA que representa a los usuarios del sistema.
+ * Almacena los datos personales, credenciales de acceso, rol y auditoría temporal.
+ */
 @Entity
 @Table(name = "users")
 public class User {
