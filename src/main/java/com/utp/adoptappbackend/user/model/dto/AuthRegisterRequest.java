@@ -22,14 +22,14 @@ import java.util.UUID;
 public class AuthRegisterRequest {
 
     /** Correo electrónico único del usuario. Obligatorio para registro y login */
-    @NotBlank(message = "El correo es obligatorio.")
+    @NotBlank(message = "El correo es obligatorio")
     private String email;
 
     /**
      * Contraseña del usuario en texto plano para validación o encriptación.
      * Obligatoria
      */
-    @NotBlank(message = "La contraseña es requerida.")
+    @NotBlank(message = "La contraseña es requerida")
     private String password;
 
     private String role;
