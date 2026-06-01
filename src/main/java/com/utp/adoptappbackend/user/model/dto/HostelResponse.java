@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO que representa la respuesta detallada de la información de un albergue.
+ * Contiene los datos de contacto, enlaces a redes sociales, estado de verificación y activación.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
