@@ -37,6 +37,7 @@ http://localhost:8082
 - Users
 - Pets
 - Hostels
+- Adoptions
 
 ## Autores
 - Caro Rojas, Dayanara Marlene
