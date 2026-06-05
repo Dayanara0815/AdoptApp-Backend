@@ -10,7 +10,7 @@ Backend desarrollado con Spring Boot para la plataforma AdoptApp.
 - PostgreSQL
 - JWT
 - WebSocket
-- AWS
+- AWS (Despliegue)
 
 ## Requisitos
 
@@ -34,10 +34,10 @@ http://localhost:8082
 
 ## Entidades principales
 
-- Users
-- Pets
-- Hostels
-- Adoptions
+- Users: Gestiona la información de los usuarios registrados en la plataforma.
+- Hostels: Almacena los datos de los albergues que participan en el proceso de adopción.
+- Pets: Registra la información de las mascotas disponibles para adopción.
+- Adoptions: Gestiona los procesos de adopción realizados por los usuarios.
 
 ## Autores
 - Caro Rojas, Dayanara Marlene
