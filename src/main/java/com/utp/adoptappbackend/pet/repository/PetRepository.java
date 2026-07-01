@@ -1,5 +1,6 @@
 package com.utp.adoptappbackend.pet.repository;
 
+import com.utp.adoptappbackend.common.model.enumeration.Sex;
 import com.utp.adoptappbackend.common.model.enumeration.Size;
 import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
@@ -23,12 +24,16 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
             "WHERE (:status IS NULL AND p.status <> com.utp.adoptappbackend.common.model.enumeration.Status.DELETED OR p.status = :status) " +
             "AND (:isSpeciesEmpty = true OR p.species IN :species) " +
             "AND (:size IS NULL OR p.size = :size) " +
+            "AND (:sex IS NULL OR p.sex = :sex) " +
+            "AND (:age IS NULL OR p.age = :age) " +
             "AND (:isSearchEmpty = true OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.user.fullName) LIKE LOWER(CONCAT('%', :search, '%')))")
     Page<Pet> findFiltered(
             @Param("status") Status status,
             @Param("species") List<Species> species,
             @Param("isSpeciesEmpty") boolean isSpeciesEmpty,
             @Param("size") Size size,
+            @Param("sex") Sex sex,
+            @Param("age") String age,
             @Param("search") String search,
             @Param("isSearchEmpty") boolean isSearchEmpty,
             Pageable pageable);

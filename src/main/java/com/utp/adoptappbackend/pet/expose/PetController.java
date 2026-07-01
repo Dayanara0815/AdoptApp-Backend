@@ -2,6 +2,7 @@ package com.utp.adoptappbackend.pet.expose;
 
 import com.utp.adoptappbackend.common.model.ApiResponse;
 import com.utp.adoptappbackend.common.model.PageResponse;
+import com.utp.adoptappbackend.common.model.enumeration.Sex;
 import com.utp.adoptappbackend.common.model.enumeration.Size;
 import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
@@ -37,6 +38,8 @@ public class PetController {
             @RequestParam(defaultValue = "AVAILABLE") String status,
             @RequestParam(required = false) List<Species> species,
             @RequestParam(required = false) Size size,
+            @RequestParam(required = false) Sex sex,
+            @RequestParam(required = false) String age,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int sizeVal) {
@@ -47,7 +50,7 @@ public class PetController {
         return ResponseEntity.ok(ApiResponse.<PageResponse<PetResponse>>builder()
                 .code(ConstantUtil.OK_CODE)
                 .message(ConstantUtil.OK_MESSAGE)
-                .data(petService.findFiltered(petStatus, species, size, search, page, sizeVal))
+                .data(petService.findFiltered(petStatus, species, size, sex, age, search, page, sizeVal))
                 .build());
     }
 
