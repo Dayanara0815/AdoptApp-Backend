@@ -2,6 +2,7 @@ package com.utp.adoptappbackend.pet.service.impl;
 
 import com.utp.adoptappbackend.common.exception.ApiValidateException;
 import com.utp.adoptappbackend.common.model.PageResponse;
+import com.utp.adoptappbackend.common.model.enumeration.Sex;
 import com.utp.adoptappbackend.common.model.enumeration.Size;
 import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
@@ -126,7 +127,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<PetResponse> findFiltered(Status status, List<Species> species, Size size, String search, int page, int sizeVal) {
+    public PageResponse<PetResponse> findFiltered(Status status, List<Species> species, Size size, Sex sex, String age, String search, int page, int sizeVal) {
         Pageable pageable = PageRequest.of(page, sizeVal, Sort.by("id").descending());
         Status petStatus = status;
         List<Species> speciesList = (species == null || species.isEmpty()) ? null : species;
@@ -134,11 +135,15 @@ public class PetServiceImpl implements PetService {
         String searchQuery = (search == null || search.trim().isEmpty()) ? "" : search.trim();
         boolean isSearchEmpty = searchQuery.isEmpty();
 
+        String petAge = (age == null || age.trim().isEmpty()) ? null : age.trim();
+
         Page<Pet> pagePets = petRepository.findFiltered(
                 petStatus, 
                 speciesList, 
                 isSpeciesEmpty, 
                 size, 
+                sex,
+                petAge,
                 searchQuery, 
                 isSearchEmpty, 
                 pageable

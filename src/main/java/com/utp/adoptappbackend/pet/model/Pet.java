@@ -1,5 +1,6 @@
 package com.utp.adoptappbackend.pet.model;
 
+import com.utp.adoptappbackend.common.model.enumeration.Sex;
 import com.utp.adoptappbackend.common.model.enumeration.Size;
 import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
@@ -30,6 +31,9 @@ public class Pet {
     private Species species;
 
     private String age;
+
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
 
     private String color;
 

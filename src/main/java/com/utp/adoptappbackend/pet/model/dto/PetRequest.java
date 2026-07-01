@@ -1,5 +1,6 @@
 package com.utp.adoptappbackend.pet.model.dto;
 
+import com.utp.adoptappbackend.common.model.enumeration.Sex;
 import com.utp.adoptappbackend.common.model.enumeration.Size;
 import com.utp.adoptappbackend.common.model.enumeration.Species;
 import com.utp.adoptappbackend.common.model.enumeration.Status;
@@ -23,6 +24,7 @@ public class PetRequest {
     private Species species;
 
     private String age;
+    private Sex sex;
     private String color;
     private Size size;
     private String description;
